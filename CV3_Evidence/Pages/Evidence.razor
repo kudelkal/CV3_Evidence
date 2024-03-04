@@ -3,31 +3,31 @@
 
 <div class="my-3 p-2 border">
     <label>Datum:
-        <input type="date" />
+        <input type="date" @bind-value ="Evid.Polozka.Datum" />
     </label>
     <label>
         Náklady:
-        <input type="number" />
+        <input type="number" @bind-value="Evid.Polozka.Naklady" />
     </label>
     <label>
         Výnosy:
-        <input type="number" />
+        <input type="number" @bind-value="Evid.Polozka.Vynosy" />
     </label>
-    <button>Přidat</button>
+    <button @onclick="Evid.Pridat">Přidat</button>
 
 </div>
 
 
 <div class="my-3 p-2 border">
-    <button>Zobraz vše</button>
-    <button>Počet záznamů</button>
+    <button @onclick="Evid.ZobrazZaznamy">Zobraz vše</button>
+    <button @onclick="Evid.ZobrazPocetZaznamu">Počet záznamů</button>
     <button>Statistiky</button>
 </div>
 
 <div class="my-3 p-2 border">
-    <p></p>
+    <p> @((MarkupString)Evid.Vypis)</p>
 </div>
 
 @code {
-
+    private Models.Evidence Evid { get; set; } = new Models.Evidence();
 }
