@@ -1,4 +1,6 @@
-﻿<PageTitle>Evidence</PageTitle>
+﻿@inject IJSRuntime JS
+
+<PageTitle>Evidence</PageTitle>
 <h1>Evidence</h1>
 
 <div class="my-3 p-2 border">
@@ -13,21 +15,90 @@
         Výnosy:
         <input type="number" @bind-value="Evid.Polozka.Vynosy" />
     </label>
-    <button @onclick="Evid.Pridat">Přidat</button>
-
+    
+    @if (Evid.IsEditace)
+    {
+        <button @onclick="Evid.UkonciEditaci">Ukončit Editaci</button>
+    }
+    else
+    {
+        <button @onclick="Evid.Pridat">Přidat</button>
+    }
 </div>
 
 
 <div class="my-3 p-2 border">
     <button @onclick="Evid.ZobrazZaznamy">Zobraz vše</button>
     <button @onclick="Evid.ZobrazPocetZaznamu">Počet záznamů</button>
-    <button>Statistiky</button>
+    <button >Statistiky</button>  "Evid.Statistiky"
 </div>
 
 <div class="my-3 p-2 border">
     <p> @((MarkupString)Evid.Vypis)</p>
 </div>
 
+@if (!Evid.PolozkyList.Any())
+{
+    <p><en>Nejsou zatím žádné záznamy</en></p>
+    
+}
+else
+{
+
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Datum</th>
+            <th>Náklady</th>
+            <th>Výnosy</th>
+            <th>Zisk</th>
+            <th>Smazat</th>
+            <th>Edituj</th>
+        </tr>
+    </thead>
+    <tbody>
+            @foreach (var item in Evid.PolozkyList)
+            {
+                <tr class="@GetCssClassRT(item)">
+                    <td>@item.Datum</td>
+                    <td>@item.Naklady.ToString("C2")</td>
+                    <td>@item.Vynosy.ToString("C2")</td>
+                    <td>@item.Zisk.ToString("C2")</td>
+                    <td>
+                        <button class="text-danger" @onclick="()=>Evid.SmazatZaznam(item)">&times;</button>
+                    </td>
+                    <td>
+                        <button class="text-info" @onclick="()=>Evid.Editace(item)">&plusmn;</button>
+                    </td>
+                </tr>
+            }
+        
+    </tbody>
+</table>
+}
 @code {
-    private Models.Evidence Evid { get; set; } = new Models.Evidence();
+    protected override void OnInitialized()
+    {
+        Evid = new Models.Evidence(JS);
+    }
+
+    private Models.Evidence Evid { get; set; }
+
+    private string GetCssClassRT(Models.Polozky item)
+    {
+        return item == Evid.Polozka ? "table-primary" : "";
+    }
+
+    // private async void SmazatZaznam(Models.Polozky item)
+    // {
+    //     var zprava = $"Chcete smazat {item.Datum} - Zisk: {item.Zisk} z vašeho seznamu?";
+    //     //JS.InvokeVoidAsync("alert", zprava);
+
+    //     if (await JS.InvokeAsync<bool>("confirm", zprava))
+    //     {
+    //         Evid.PolozkyList.Remove(item);
+    //     }
+    // }   zakomentoivano protoze jsme delali druhej zpusob ve tride
 }
